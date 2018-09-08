@@ -3,6 +3,8 @@ package pl.sdacademy.vending.controller;
 import pl.sdacademy.vending.model.Tray;
 import pl.sdacademy.vending.model.VendingMachine;
 
+import java.util.Optional;
+
 /**
  * Klasa, będąca reprezentacją górnej warstwy architektury. Odpowiada za obsługę interakcji z użytkownikiem – obiera od
  * warstwy prezentacji żądania użytkownika i wywołuje określone informacje. W naszej aplikacji będzie odpowiedzialna za
@@ -94,10 +96,10 @@ public class CustomerOperationController {
      * @param col numer kolumny, z którego komórka powinna zostać wyświetlona
      */
     private void printSymbolForCell(int row, int col) {
-        Tray tray = machine.trayDetailsAtPosition(row,col);
-        String symbol = tray.getSymbol();
-
-
+        Optional<Tray> tray = machine.trayDetailsAtPosition(row,col);
+        String symbol = tray
+                .map(Tray::getSymbol)
+                .orElse("--");
         System.out.print("|   " + symbol  + "   |");
     }
 
