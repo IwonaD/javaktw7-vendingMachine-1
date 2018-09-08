@@ -3,6 +3,7 @@ package pl.sdacademy.vending.model;
 import pl.sdacademy.vending.util.Configuration;
 
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * Główna klasa automatu przechowująca jego stan oraz zachowania. Aktualnie jest bardzo "uboga" w zachowania, umożliwia
@@ -52,11 +53,58 @@ public class VendingMachine {
     }
 
     private Tray createTrayForPosition(int rowNumber, int colNumber) {
+        //0.8 > stworz tacke
+        //0.2 < zwroc null (nie tworz tacki)
+        if (!shouldGenerateTray() ) {
+            return null;
+
+        }
+
+
+
         char rowSymbol = (char) ('A' + rowNumber);
         int colSymbol = colNumber + 1;
         String symbol = "" + rowSymbol + colSymbol;
-        return Tray.builder(symbol).build();
+
+        Random random = new Random();
+        int generatedPrice = random.nextInt(401); //values from 0 to 400
+        int calculatedPrice = generatedPrice + 100; //changed spectrum to 100-500
+
+        double productProbability = Math.random();
+
+        Tray.Builder trayBuilder = Tray
+                .builder(symbol)
+                .price(Long.valueOf(calculatedPrice));
+
+        if (productProbability < 0.5) {
+            //1 product
+            Product product = new Product("Product" + symbol);
+            trayBuilder = trayBuilder.product(product);
+
+
         }
+        if (productProbability<0.1) {
+            //to jeszcze 1 product
+            Product product = new Product("Product" + symbol);
+            trayBuilder = trayBuilder.product(product);
+
+        }
+
+
+
+
+
+        return trayBuilder.build();
+
+
+
+
+        }
+
+    private boolean shouldGenerateTray() {
+        //true jezeli tacka powinna byc wygenerowana
+        return Math.random() < 0.8;
+    }
 
     /**
      * Metoda umożliwiająca pobranie ilości wierszy automatu z obiektu konfiguracji. Sposób pobierania wartości parametry
