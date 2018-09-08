@@ -19,6 +19,7 @@ public class VendingMachine {
      */
     private final Long maxRowsSize;
     private final Long maxColsSize;
+    private final Tray[][] trays;
 
     /**
      * Konstruktor, który umożliwia przekazanie używanej klasy konfiguracji. Podczas normalnego działania aplikacji będzie
@@ -35,7 +36,25 @@ public class VendingMachine {
         if (maxColsSize < 1 || maxColsSize > 9) {
             throw new IllegalArgumentException("VendingMachine can not be created with " + maxColsSize + " cols");
         }
+        trays = new Tray[maxRowsSize.intValue()] [maxColsSize.intValue()];
+
+        for (int rowNumber = 0; rowNumber < maxRowsSize; rowNumber++) {
+            for (int colNumber = 0; colNumber < maxColsSize; colNumber++) {
+               trays[rowNumber][colNumber] = createTrayForPosition(rowNumber, colNumber);
+
+            }
+
+        }
+
+
     }
+
+    private Tray createTrayForPosition(int rowNumber, int colNumber) {
+        char rowSymbol = (char) ('A' + rowNumber);
+        int colSymbol = colNumber + 1;
+        String symbol = "" + rowSymbol + colSymbol;
+        return new Tray(symbol);
+        }
 
     /**
      * Metoda umożliwiająca pobranie ilości wierszy automatu z obiektu konfiguracji. Sposób pobierania wartości parametry
@@ -55,5 +74,8 @@ public class VendingMachine {
     public Long colsSize() {
         // pod kluczem "machine.size.cols" jest zapisana maksymalna ilość kolumn automatu.
         return maxColsSize;
+    }
+    public Tray trayDetailsAtPosition (int rowNumber, int colNumber) {
+        return trays [rowNumber] [colNumber];
     }
 }
